@@ -7,7 +7,7 @@ const person = {
     return `${this.firstName} ${this.lastName}`;
   },
   role: "Web Developer",
-  avatar: "/images/avatar3.png",
+  avatar: "/images/avatar.png",
   location: "India/Maharashtra", // Expecting the IANA time zone identifier, e.g., 'Europe/Vienna'
   languages: ["Marathi", "English", "Hindi"], // optional: Leave the array empty if you don't want to display languages
 };
