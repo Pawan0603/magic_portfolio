@@ -1,0 +1,157 @@
+---
+title: "How to Create a Simple Chat Web Application Using Socket.IO"
+publishedAt: "2025-05-27"
+image: "/images/blog/chatapp.png"
+summary: "Socket.IO is a powerful library that enables real-time, bidirectional communication between web clients and servers. Here's a step-by-step guide to building a simple chat web app."
+tag: "Tutorial"
+---
+
+Socket.IO is a powerful library that enables real-time, bidirectional communication between web clients and servers. In this tutorial, I’ll walk you through building a simple real-time chat web application using **Socket.IO**, **Node.js**, and **HTML/CSS/JavaScript**—perfect for getting started with real-time web apps.
+
+## What You’ll Learn
+
+- How to set up a Node.js server with Socket.IO
+- How to create a basic frontend to send and receive messages
+- How to handle user connections in real-time
+
+## Setting Up the Project
+
+First, create a new directory and initialize the project:
+
+<CodeBlock className="my-24"
+    compact
+    codeInstances={[
+        {
+            code: 'mkdir socket-chat-app\ncd socket-chat-app\nnpm init -y\nnpm install express socket.io',
+            label: 'Terminal',
+            language: 'bash'
+        },
+    ]}
+    copyButton
+/>
+
+Create a file called `server.js` and set up a basic server:
+
+<CodeBlock className="my-24"
+    compact
+    codeInstances={[
+        {
+            code: `const express = require('express');
+const http = require('http');
+const socketIo = require('socket.io');
+
+const app = express();
+const server = http.createServer(app);
+const io = socketIo(server);
+
+app.use(express.static('public'));
+
+io.on('connection', (socket) => {
+    console.log('A user connected');
+    
+    socket.on('chat message', (msg) => {
+        io.emit('chat message', msg);
+    });
+
+    socket.on('disconnect', () => {
+        console.log('User disconnected');
+    });
+});
+
+server.listen(3000, () => {
+    console.log('Server running on http://localhost:3000');
+});`,
+            label: 'server.js',
+            language: 'javascript'
+        },
+    ]}
+    copyButton
+/>
+
+## Creating the Frontend
+
+Inside your project folder, create a `public` directory and add an `index.html` file:
+
+<CodeBlock className="my-24"
+    compact
+    codeInstances={[
+        {
+            code: `<!DOCTYPE html>
+<html>
+<head>
+    <title>Chat App</title>
+    <style>
+        body { font-family: Arial; }
+        #messages { list-style: none; padding: 0; }
+        #form { display: flex; }
+        #input { flex: 1; padding: 10px; }
+        #send { padding: 10px; }
+    </style>
+</head>
+<body>
+    <ul id="messages"></ul>
+    <form id="form" action="">
+        <input id="input" autocomplete="off" /><button id="send">Send</button>
+    </form>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+        const form = document.getElementById('form');
+        const input = document.getElementById('input');
+        const messages = document.getElementById('messages');
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            if (input.value) {
+                socket.emit('chat message', input.value);
+                input.value = '';
+            }
+        });
+
+        socket.on('chat message', function(msg) {
+            const item = document.createElement('li');
+            item.textContent = msg;
+            messages.appendChild(item);
+            window.scrollTo(0, document.body.scrollHeight);
+        });
+    </script>
+</body>
+</html>`,
+            label: 'index.html',
+            language: 'html'
+        },
+    ]}
+    copyButton
+/>
+
+## Running the App
+
+To run the application:
+
+<CodeBlock className="my-24"
+    compact
+    codeInstances={[
+        {
+            code: 'node server.js',
+            label: 'Terminal',
+            language: 'bash'
+        },
+    ]}
+    copyButton
+/>
+
+Then open your browser and go to **http://localhost:3000**. Open it in multiple tabs to simulate a real-time group chat.
+
+## Final Thoughts
+
+This simple chat application shows the power and ease of using Socket.IO for real-time communication. While this is just a basic example, you can expand on it by adding:
+
+- User authentication
+- Message history (via a database)
+- Private messaging or rooms
+- Notifications and typing indicators
+
+Socket.IO is a great tool for adding interactivity to your apps, whether you're building a chat app, a real-time dashboard, or a multiplayer game.
+
+Happy coding!

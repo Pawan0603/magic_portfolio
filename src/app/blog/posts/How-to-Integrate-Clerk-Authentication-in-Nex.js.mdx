@@ -1,0 +1,168 @@
+---
+title: "How to Integrate Clerk Authentication in Next.js"
+publishedAt: "2025-05-27"
+image: "/images/blog/clerk.jpeg"
+summary: "Clerk offers a powerful and easy-to-use authentication system for modern Next.js apps. This guide walks through setting it up step by step."
+tag: "Guide"
+---
+
+Authentication is a foundational part of any web application, and Clerk makes it incredibly simple to integrate secure, user-friendly auth into your Next.js project. In this guide, we’ll walk through the steps to get Clerk authentication up and running.
+
+## Why Clerk?
+
+Clerk provides a complete user management solution, including sign up, sign in, user profiles, session management, and more. It’s built with modern frontend frameworks in mind, making it an ideal choice for Next.js applications.
+
+## Step 1: Create a Clerk Account
+
+To get started, sign up at [https://clerk.dev](https://clerk.dev) and create a new application. Once your application is created, you’ll receive a **Frontend API** and **API keys** that you’ll need for your project.
+
+## Step 2: Install Clerk Packages
+
+Install the necessary Clerk packages:
+
+<CodeBlock className="my-24"
+    compact
+    codeInstances={[
+        {
+            code: 'npm install @clerk/nextjs',
+            label: 'Terminal',
+            language: 'bash'
+        },
+    ]}
+    copyButton
+/>
+
+## Step 3: Configure Clerk in `next.config.js`
+
+Add the Clerk middleware config:
+
+<CodeBlock className="my-24"
+    compact
+    codeInstances={[
+        {
+            code: `// next.config.js
+module.exports = {
+  reactStrictMode: true,
+  experimental: {
+    appDir: true,
+  },
+  rewrites: async () => [
+    {
+      source: "/:path*",
+      destination: "/:path*",
+    },
+  ],
+};`,
+            label: 'JavaScript',
+            language: 'js'
+        },
+    ]}
+    copyButton
+/>
+
+## Step 4: Add Clerk Provider in `_app.tsx`
+
+Wrap your app with `<ClerkProvider>` to enable authentication context:
+
+<CodeBlock className="my-24"
+    compact
+    codeInstances={[
+        {
+            code: `// pages/_app.tsx
+import { ClerkProvider } from "@clerk/nextjs";
+import type { AppProps } from "next/app";
+
+export default function MyApp({ Component, pageProps }: AppProps) {
+  return (
+    <ClerkProvider {...pageProps}>
+      <Component {...pageProps} />
+    </ClerkProvider>
+  );
+}`,
+            label: 'TypeScript',
+            language: 'tsx'
+        },
+    ]}
+    copyButton
+/>
+
+## Step 5: Use Clerk Components
+
+Add built-in Clerk components to your app:
+
+<CodeBlock className="my-24"
+    compact
+    codeInstances={[
+        {
+            code: `// pages/sign-in.tsx
+import { SignIn } from "@clerk/nextjs";
+
+export default function SignInPage() {
+  return <SignIn />;
+}`,
+            label: 'Sign In',
+            language: 'tsx'
+        },
+        {
+            code: `// pages/sign-up.tsx
+import { SignUp } from "@clerk/nextjs";
+
+export default function SignUpPage() {
+  return <SignUp />;
+}`,
+            label: 'Sign Up',
+            language: 'tsx'
+        },
+    ]}
+    copyButton
+/>
+
+## Step 6: Protect Routes
+
+Use the `withServerSideAuth` helper to protect pages:
+
+<CodeBlock className="my-24"
+    compact
+    codeInstances={[
+        {
+            code: `// pages/dashboard.tsx
+import { withServerSideAuth } from "@clerk/nextjs/ssr";
+
+export const getServerSideProps = withServerSideAuth();
+
+export default function Dashboard() {
+  return <div>Welcome to your dashboard!</div>;
+}`,
+            label: 'Protected Route',
+            language: 'tsx'
+        },
+    ]}
+    copyButton
+/>
+
+## Step 7: Add Environment Variables
+
+Add your Clerk environment variables in `.env.local`:
+
+<CodeBlock className="my-24"
+    compact
+    codeInstances={[
+        {
+            code: `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=your_clerk_publishable_key
+CLERK_SECRET_KEY=your_clerk_secret_key`,
+            label: '.env.local',
+            language: 'env'
+        },
+    ]}
+    copyButton
+/>
+
+## Wrapping Up
+
+Clerk makes authentication smooth and developer-friendly with powerful APIs and built-in UI components. With this setup, your Next.js app now supports secure user authentication with minimal effort.
+
+Whether you're building a SaaS product, an internal tool, or a side project, Clerk has you covered.
+
+---
+
+If you have any questions or want to learn how to extend this setup with roles, permissions, or organization support, stay tuned for future posts!

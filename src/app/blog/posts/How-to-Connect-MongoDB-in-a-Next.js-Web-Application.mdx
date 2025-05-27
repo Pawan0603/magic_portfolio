@@ -1,0 +1,113 @@
+---
+title: "How to Connect MongoDB in a Next.js Web Application"
+publishedAt: "2025-04-29"
+image: "/images/blog/mongo.png"
+summary: "A step-by-step guide on integrating MongoDB with your Next.js project using Mongoose, ensuring efficient data handling and scalability."
+tag: "Tutorial"
+---
+
+MongoDB is a popular NoSQL database often used in modern web applications due to its flexibility and ease of use. In this post, I’ll walk you through how to connect MongoDB with a Next.js application using Mongoose.
+
+## Step 1: Install Mongoose
+
+First, install the required packages:
+
+<CodeBlock className="my-24"
+    compact
+    codeInstances={[{
+        code: "npm install mongoose",
+        label: "Terminal",
+        language: "bash"
+    }]}
+    copyButton
+/>
+
+## Step 2: Create a MongoDB Connection Utility
+
+Inside your project, create a file called `lib/mongodb.js` to manage the MongoDB connection:
+
+<CodeBlock className="my-24"
+    compact
+    codeInstances={[{
+        code: `import mongoose from "mongoose";
+
+const MONGODB_URI = process.env.MONGODB_URI;
+
+if (!MONGODB_URI) {
+  throw new Error("Please define the MONGODB_URI environment variable");
+}
+
+let cached = global.mongoose;
+
+if (!cached) {
+  cached = global.mongoose = { conn: null, promise: null };
+}
+
+async function dbConnect() {
+  if (cached.conn) {
+    return cached.conn;
+  }
+
+  if (!cached.promise) {
+    cached.promise = mongoose.connect(MONGODB_URI, {
+      bufferCommands: false,
+    }).then((mongoose) => {
+      return mongoose;
+    });
+  }
+  cached.conn = await cached.promise;
+  return cached.conn;
+}
+
+export default dbConnect;`,
+        label: "mongodb.js",
+        language: "js"
+    }]}
+    copyButton
+/>
+
+## Step 3: Use the Connection in Your API Routes
+
+You can now use `dbConnect()` in your API route handlers inside `pages/api`.
+
+Example:
+
+<CodeBlock className="my-24"
+    compact
+    codeInstances={[{
+        code: `import dbConnect from "@/lib/mongodb";
+
+export default async function handler(req, res) {
+  await dbConnect();
+
+  // Your API logic here
+  res.status(200).json({ message: "MongoDB connected successfully!" });
+}`,
+        label: "pages/api/test.js",
+        language: "js"
+    }]}
+    copyButton
+/>
+
+## Step 4: Add Your Environment Variable
+
+In your `.env.local` file, add the MongoDB URI:
+
+<CodeBlock className="my-24"
+    compact
+    codeInstances={[{
+        code: 'MONGODB_URI=mongodb+srv://<username>:<password>@cluster0.mongodb.net/myDatabase?retryWrites=true&w=majority',
+        label: ".env.local",
+        language: "env"
+    }]}
+    copyButton
+/>
+
+> ⚠️ Make sure you never commit `.env.local` to version control.
+
+## Conclusion
+
+With this setup, your Next.js app is ready to interact with MongoDB using Mongoose. This modular approach ensures a clean and maintainable codebase while leveraging powerful features from both Next.js and MongoDB.
+
+Stay tuned for more tutorials and deep dives!
+
