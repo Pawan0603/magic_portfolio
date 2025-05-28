@@ -1,7 +1,7 @@
 "use client";
 
 import { mailchimp } from "@/app/resources";
-import { Button, Flex, Heading, Input, Text, Background, Column } from "@/once-ui/components";
+import { Button, Flex, Heading, Input, Text, Background, Column, Textarea } from "@/once-ui/components";
 import { useState } from "react";
 
 function debounce<T extends (...args: any[]) => void>(func: T, delay: number): T {
@@ -19,7 +19,9 @@ type NewsletterProps = {
 };
 
 export const Mailchimp = ({ newsletter }: { newsletter: NewsletterProps }) => {
+  const [name, setName] = useState<string>("");
   const [email, setEmail] = useState<string>("");
+  const [message, setMessage] = useState<string>("");
   const [error, setError] = useState<string>("");
   const [touched, setTouched] = useState<boolean>(false);
 
@@ -50,6 +52,14 @@ export const Mailchimp = ({ newsletter }: { newsletter: NewsletterProps }) => {
     if (!validateEmail(email)) {
       setError("Please enter a valid email address.");
     }
+  };
+
+  const SendMessage = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    
+    setEmail("");
+    setName("");
+    setMessage("");
   };
 
   return (
@@ -132,12 +142,22 @@ export const Mailchimp = ({ newsletter }: { newsletter: NewsletterProps }) => {
           display: "flex",
           justifyContent: "center",
         }}
-        action={mailchimp.action}
-        method="post"
-        id="mc-embedded-subscribe-form"
-        name="mc-embedded-subscribe-form"
+        onSubmit={SendMessage}
       >
-        <Flex id="mc_embed_signup_scroll" fillWidth maxWidth={24} gap="8">
+        <Column id="mc_embed_signup_scroll" fillWidth maxWidth={24} gap="8">
+          <Input
+            formNoValidate
+            labelAsPlaceholder
+            id="mce-NAME"
+            name="NAME"
+            type="text"
+            label="Name"
+            value={name}
+            required
+            onChange={(e) => {
+              setName(e.target.value);  
+            }}
+          />
           <Input
             formNoValidate
             labelAsPlaceholder
@@ -155,6 +175,16 @@ export const Mailchimp = ({ newsletter }: { newsletter: NewsletterProps }) => {
             }}
             onBlur={handleBlur}
             errorMessage={error}
+          />
+          <Textarea
+            id="mce-message"
+            name="MESSAGE"
+            label=""
+            value={message}
+            placeholder="Enter your message here"
+            lines={3}
+            required
+            onChange={(e) => setMessage(e.target.value)}
           />
           <div style={{ display: "none" }}>
             <input
@@ -181,12 +211,12 @@ export const Mailchimp = ({ newsletter }: { newsletter: NewsletterProps }) => {
           </div>
           <div className="clear">
             <Flex height="48" vertical="center">
-              <Button id="mc-embedded-subscribe" value="Subscribe" size="m" fillWidth>
-                Subscribe
+              <Button type="submit" size="m" fillWidth>
+                Send
               </Button>
             </Flex>
           </div>
-        </Flex>
+        </Column>
       </form>
     </Column>
   );
