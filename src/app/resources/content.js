@@ -195,40 +195,28 @@ const about = {
       //   ],
       // },
       {
-        title: "HTML/CSS",
-        description: <>Building responsive and performant web apps with HTML/CSS.</>,
+        title: "Languages",
+        description: <> JavaScript, TypeScript, HTML, CSS, C/C++, Python</>,
       },
       {
-        title: "JavaScript",
-        description: <>Building performant web apps with JavaScript.</>,
+        title: "Frontend Technologies",
+        description: <>React.js, Next.js, Tailwind CSS, Bootstrap, Shadcn/UI </>,
       },
       {
-        title: "React.js",
-        description: <>Building interactive UIs with component-based architecture.</>,
+        title: "Backend & APIs",
+        description: <>Next.js API Routes, REST API, Node.js</>,
       },
       {
-        title: "Next.js",
-        description: <>Building full-stack web applications with Next.js and server-side rendering..</>,
+        title: "Databases",
+        description: <>MongoDB, MySQL</>,
       },
       {
-        title: "Tailwind CSS",
-        description: <>Building responsive and performant web apps with Tailwind CSS.</>,
-      },
-      // {
-      //   title: "Supabase",
-      //   description: <>Building performant web apps with Supabase.</>,
-      // },
-      {
-        title: "Node.js",
-        description: <> Developing backend logic and APIs using JavaScript runtime.</>,
+        title: "Version Control & Tools",
+        description: <>Git, GitHub, VSCode, Postman</>,
       },
       {
-        title: "Express.js",
-        description: <> Building RESTful APIs and server-side apps with minimal overhead.</>,
-      },
-      {
-        title: "MongoDB",
-        description: <>Designing NoSQL databases with flexible document-based structure.</>,
+        title: "Development & Cloud",
+        description: <> Vercel, Netlify, Google Cloud Platform (basic), Docker (basic) </>,
       },
     ],
   },
