@@ -1,0 +1,173 @@
+---
+title: "How to Integrate n8n in Next.js"
+publishedAt: "2025-09-20"
+image: "/images/blog/n8n.jpg"
+summary: "n8n is a powerful workflow automation tool. This guide shows you how to integrate n8n into your Next.js application for seamless automation."
+tag: "Guide"
+---
+
+Automation is becoming an essential part of modern web apps. Instead of manually handling repetitive tasks like sending emails, managing databases, or syncing APIs, tools like **n8n** let you automate these workflows visually.  
+In this guide, we’ll see how to set up and integrate **n8n** with your Next.js app.
+
+## Why n8n?
+
+n8n is an **open-source workflow automation platform** that lets you connect APIs, databases, and services with no-code/low-code workflows. It supports 400+ integrations and provides a self-hostable option—making it flexible, private, and developer-friendly.
+
+Use cases include:
+- Sending emails after form submissions  
+- Connecting your Next.js app with CRMs or databases  
+- Automating background jobs like notifications or report generation  
+
+---
+
+## Step 1: Install & Run n8n
+
+First, install n8n locally using npm or Docker.
+
+<CodeBlock className="my-24"
+    compact
+    codeInstances={[
+        {
+            code: "npm install n8n -g\nn8n start",
+            label: "Terminal",
+            language: "bash"
+        },
+    ]}
+    copyButton
+/>
+
+Alternatively, with Docker:
+
+<CodeBlock className="my-24"
+    compact
+    codeInstances={[
+        {
+            code: "docker run -it --rm \\\n  -p 5678:5678 \\\n  -v ~/.n8n:/home/node/.n8n \\\n  n8nio/n8n",
+            label: "Docker",
+            language: "bash"
+        },
+    ]}
+    copyButton
+/>
+
+Once running, open [http://localhost:5678](http://localhost:5678) to access the n8n dashboard.
+
+---
+
+## Step 2: Create a Workflow
+
+Inside n8n’s UI:  
+1. Create a new workflow  
+2. Add a **Webhook node** → this will expose an endpoint (e.g., `/webhook/12345`)  
+3. Add additional nodes (like Send Email, Database, Slack, etc.)  
+
+For example:  
+- Webhook receives form data from Next.js  
+- Workflow saves data to a database  
+- Then sends a confirmation email  
+
+---
+
+## Step 3: Expose Webhook in Next.js
+
+From your Next.js app, you can send requests to the n8n webhook whenever an action happens (like form submission).
+
+<CodeBlock className="my-24"
+    compact
+    codeInstances={[
+        {
+            code: `// pages/api/submit.ts
+import type { NextApiRequest, NextApiResponse } from "next";
+
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  if (req.method === "POST") {
+    const response = await fetch("http://localhost:5678/webhook/12345", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(req.body),
+    });
+
+    const data = await response.json();
+    return res.status(200).json({ success: true, data });
+  }
+
+  res.status(405).json({ error: "Method Not Allowed" });
+}`,
+            label: "API Route",
+            language: "ts"
+        },
+    ]}
+    copyButton
+/>
+
+Now whenever you send a POST request to `/api/submit` in Next.js, it will trigger your n8n workflow.
+
+---
+
+## Step 4: Trigger Workflow from Frontend
+
+On the frontend, submit data through the API route:
+
+<CodeBlock className="my-24"
+    compact
+    codeInstances={[
+        {
+            code: `// components/Form.tsx
+import { useState } from "react";
+
+export default function Form() {
+  const [name, setName] = useState("");
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    await fetch("/api/submit", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name }),
+    });
+    alert("Form submitted & workflow triggered!");
+  }
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <input
+        type="text"
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+        placeholder="Enter your name"
+      />
+      <button type="submit">Submit</button>
+    </form>
+  );
+}`,
+            label: "Frontend Form",
+            language: "tsx"
+        },
+    ]}
+    copyButton
+/>
+
+---
+
+## Step 5: Deploy n8n
+
+For production:  
+- You can host n8n on **VPS (DigitalOcean, Linode, AWS EC2, etc.)**  
+- Or use **n8n Cloud** (managed hosting by n8n team)  
+
+Make sure to configure HTTPS and environment variables for security.
+
+---
+
+## Wrapping Up
+
+By integrating n8n with Next.js, you unlock **powerful automation** capabilities:  
+- Collect data from users in your app  
+- Automate emails, database actions, and third-party APIs  
+- Save hours of repetitive work  
+
+Whether you’re building a SaaS product, a portfolio, or an internal dashboard, n8n makes your Next.js app smarter with automation.
+
+---
+
+Stay tuned for upcoming guides on **advanced n8n workflows, authentication, and scaling in production** 🚀
