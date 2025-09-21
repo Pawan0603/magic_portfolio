@@ -1,0 +1,137 @@
+---
+title: "How to Integrate Cloudinary in Next.js"
+publishedAt: "2025-09-20"
+image: "/images/blog/cloudinary-nextjs.jpg"
+summary: "Learn how to seamlessly integrate Cloudinary with Next.js for image and video management, including uploads, transformations, and optimization."
+tag: "Guide"
+---
+
+Optimizing images and videos is crucial for performance and user experience in modern web apps. [Cloudinary](https://cloudinary.com/) is a powerful media management platform that allows you to easily upload, transform, and deliver images and videos. In this guide, we’ll walk through step-by-step how to integrate Cloudinary into your Next.js application.
+
+## Why Cloudinary?
+
+Cloudinary provides:
+
+- Automatic image optimization (format, quality, size)
+- On-the-fly transformations (crop, resize, watermark, etc.)
+- Secure uploads via APIs
+- Support for both images and videos
+
+This makes it a perfect companion for Next.js apps that need efficient media handling.
+
+## Step 1: Create a Cloudinary Account
+
+Sign up for a free account at [cloudinary.com](https://cloudinary.com/).  
+After signing up, you’ll find your **Cloud Name**, **API Key**, and **API Secret** in the **Dashboard**. These credentials are required for integration.
+
+## Step 2: Install Dependencies
+
+Install the Cloudinary SDK:
+
+<CodeBlock className="my-24"
+    compact
+    codeInstances={[
+        {
+            code: "npm install cloudinary",
+            label: "Terminal",
+            language: "bash"
+        },
+    ]}
+    copyButton
+/>
+
+If you also want to support file uploads from the client, you may use `axios`:
+
+<CodeBlock className="my-24"
+    compact
+    codeInstances={[
+        {
+            code: "npm install axios",
+            label: "Terminal",
+            language: "bash"
+        },
+    ]}
+    copyButton
+/>
+
+## Step 3: Configure Environment Variables
+
+Add your Cloudinary credentials in `.env.local`:
+
+<CodeBlock className="my-24"
+    compact
+    codeInstances={[
+        {
+            code: "CLOUDINARY_CLOUD_NAME=your_cloud_name\nCLOUDINARY_API_KEY=your_api_key\nCLOUDINARY_API_SECRET=your_api_secret",
+            label: ".env.local",
+            language: "env"
+        },
+    ]}
+    copyButton
+/>
+
+## Step 4: Setup Cloudinary Utility
+
+Create a utility file for Cloudinary config:
+
+<CodeBlock className="my-24"
+    compact
+    codeInstances={[
+        {
+            code: "// lib/cloudinary.ts\nimport { v2 as cloudinary } from 'cloudinary';\n\ncloudinary.config({\n  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,\n  api_key: process.env.CLOUDINARY_API_KEY,\n  api_secret: process.env.CLOUDINARY_API_SECRET,\n});\n\nexport default cloudinary;",
+            label: "TypeScript",
+            language: "ts"
+        },
+    ]}
+    copyButton
+/>
+
+## Step 5: Create an Upload API Route
+
+In Next.js, you can create an API route to handle uploads securely:
+
+<CodeBlock className="my-24"
+    compact
+    codeInstances={[
+        {
+            code: "// pages/api/upload.ts\nimport type { NextApiRequest, NextApiResponse } from 'next';\nimport cloudinary from '../../lib/cloudinary';\n\nexport default async function handler(req: NextApiRequest, res: NextApiResponse) {\n  if (req.method === 'POST') {\n    try {\n      const fileStr = req.body.data;\n      const uploadedResponse = await cloudinary.uploader.upload(fileStr, {\n        upload_preset: 'ml_default', // You can set custom presets in Cloudinary Dashboard\n      });\n      res.status(200).json(uploadedResponse);\n    } catch (error) {\n      res.status(500).json({ error: 'Upload failed', details: error });\n    }\n  } else {\n    res.status(405).json({ error: 'Method not allowed' });\n  }\n}",
+            label: "API Route",
+            language: "ts"
+        },
+    ]}
+    copyButton
+/>
+
+## Step 6: Create a Frontend Upload Form
+
+You can now build a simple upload form:
+
+<CodeBlock className="my-24"
+    compact
+    codeInstances={[
+        {
+            code: "// pages/upload.tsx\nimport { useState } from 'react';\nimport axios from 'axios';\n\nexport default function UploadPage() {\n  const [file, setFile] = useState<File | null>(null);\n  const [imageUrl, setImageUrl] = useState<string>('');\n\n  const handleSubmit = async (e: React.FormEvent) => {\n    e.preventDefault();\n    if (!file) return;\n\n    const reader = new FileReader();\n    reader.readAsDataURL(file);\n    reader.onloadend = async () => {\n      const base64data = reader.result;\n      const res = await axios.post('/api/upload', { data: base64data });\n      setImageUrl(res.data.secure_url);\n    };\n  };\n\n  return (\n    <div>\n      <h1>Upload Image</h1>\n      <form onSubmit={handleSubmit}>\n        <input type=\"file\" accept=\"image/*\" onChange={(e) => setFile(e.target.files?.[0] || null)} />\n        <button type=\"submit\">Upload</button>\n      </form>\n      {imageUrl && (\n        <div>\n          <p>Uploaded Image:</p>\n          <img src={imageUrl} alt=\"Uploaded\" width=\"300\" />\n        </div>\n      )}\n    </div>\n  );\n}",
+            label: "Upload Form",
+            language: "tsx"
+        },
+    ]}
+    copyButton
+/>
+
+## Step 7: Apply Transformations
+
+Cloudinary makes it easy to apply transformations by modifying the URL. For example, to resize an image to 300x300 and crop:
+
+```
+https://res.cloudinary.com/<cloud_name>/image/upload/w_300,h_300,c_fill/<public_id>.jpg
+```
+
+You can dynamically generate transformation URLs in your code as well.
+
+## Wrapping Up
+
+By integrating Cloudinary into your Next.js project, you gain powerful tools for managing media, including secure uploads, delivery optimization, and advanced transformations. This setup allows your app to scale with ease while ensuring great performance.
+
+---
+
+Stay tuned for more tutorials on integrating advanced features like video streaming, transformations on the fly, and AI-powered media optimization with Cloudinary.
