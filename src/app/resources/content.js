@@ -6,7 +6,7 @@ const person = {
   get name() {
     return `${this.firstName} ${this.lastName}`;
   },
-  role: "Web Developer",
+  role: "Full-Stack Developer",
   avatar: "/images/avatar.png",
   location: "Maharashtra/India", // Expecting the IANA time zone identifier, e.g., 'Europe/Vienna'
   languages: ["Marathi", "English", "Hindi"], // optional: Leave the array empty if you don't want to display languages
@@ -51,11 +51,13 @@ const home = {
   label: "Home",
   title: `${person.name}'s Portfolio`,
   description: `Portfolio website showcasing my work as a ${person.role}`,
-  headline: <>Web Developer</>,
+  headline: <>Full-Stack Developer</>,
   subline: (
     <>
-      I'm Pawan, a web developer. I build performant and responsive web applications.
-      <br /> Find me on <a target="blank_" href="https://x.com/pawanmthakre">twitter</a>
+      Hi! I'm Pawan, Full Stack Developer specializing in MERN & Next.js, crafting high-performance web applications with a focus on AI + Web Integration.
+      <br /> Reach out: <a href="mailto:pawanthakre252002@gmail.com?subject=Subject%20Here&body=Hello%20there,">
+      via Email
+    </a>
     </>
   ),
 };
@@ -80,8 +82,7 @@ const about = {
     title: "Introduction",
     description: (
       <>
-        Hi, I'm Pawan — a Web Developer crafting seamless digital experiences using modern web technologies.
-        With hands-on expertise in Next.js, React.js, and the modern web stack, I build performant and responsive web applications. I've delivered projects for clients and also work on personal projects to sharpen my skills and explore new ideas in web development.
+        Hi, I'm Pawan Thakre, a Master's in Computer Science student and a passionate Full Stack Developer specializing in the MERN stack and Next.js. My focus lies in building performant, responsive web applications and exploring the intersection of AI + Web Integration to solve real-world problems. As an active Open Source Contributor, I thrive on collaboration and am constantly refining my skills in TypeScript and scalable SaaS architecture.
       </>
     ),
   },
@@ -132,7 +133,7 @@ const about = {
       {
         company: "Freelance",
         timeframe: "2023 - Present",
-        role: "Web Devloper",
+        role: "Full-Stack Developer",
         achievements: [
           <>
             Project development freelancer for clients, including students and professionals. Adept at delivering high-quality, tailor-made projects that meet specific client requirements within established deadlines.
